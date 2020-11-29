@@ -17,20 +17,22 @@ def read_wav(file_name):
 
     # isolate one channel
     try:
-        data = wav_data[:,0]
+        data = wav_data[:, 0]
     except IndexError:
         data = wav_data
     length = int(len(wav_data) / fs)
 
     # scaling
-    max_val = max(data)
-    min_val = min(data)
-    print(f"Max data:{max_val} Min data:{min_val}")
-
-    normalized_data = np.zeros(len(wav_data))
-    #print(normalized_data.shape)
-    for i in range(0,len(wav_data)):
-        normalized_data[i] = (data[i]-min_val)/(max_val-min_val)
+    max_val = float(np.max(data))
+    min_val = float(np.min(data))
+    denom = max_val - min_val
+    print(f"Max data:{max_val}\nMin data:{min_val}\nDenominator:{denom}")
+    #
+    normalized_data = np.zeros(len(wav_data), dtype=np.float64)
+    print("Normalizing...")
+    for i in range(0, len(data)):
+        normalized_data[i] = 2 * ((data[i] - min_val) / denom) - 1
+        # print(f"Data:{data[i]}\tNormalized:{normalized_data[i]}")
 
     print("Sample Rate:", fs)
     print("Data points:", len(data))
