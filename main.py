@@ -59,12 +59,13 @@ if __name__ == '__main__':
     # plt.close()
 
     #scipy_fft(test_data)
-    test_data = np.array([1,2])
+    test_data = np.array([1,2,3,4])
     print(test_data)
     Fourier = radix2_fft(test_data)
-    print(Fourier)
+    #print(Fourier)
     print(abs(Fourier))
 
-    plt.figure(5)
+    plt.figure(4)
     plt.plot(abs(Fourier))
+    plt.grid('both')
     plt.show()
