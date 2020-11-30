@@ -26,13 +26,13 @@ def read_wav(file_name):
     max_val = float(np.max(data))
     min_val = float(np.min(data))
     denom = max_val - min_val
-    print(f"Max data:{max_val}\nMin data:{min_val}\nDenominator:{denom}")
     #
     normalized_data = np.zeros(len(wav_data), dtype=np.float64)
     print("Normalizing...")
     for i in range(0, len(data)):
         normalized_data[i] = 2 * ((data[i] - min_val) / denom) - 1
-        # print(f"Data:{data[i]}\tNormalized:{normalized_data[i]}")
+        #normalized_data[i] = data[i]
+    print("Normalizing Complete")
 
     print("Sample Rate:", fs)
     print("Data points:", len(data))

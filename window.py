@@ -3,10 +3,8 @@ import numpy as np
 
 def hamming_window(n):
     """
-    INPUT:
-    n               (length of window)
-    OUTPUT:
-    window_array    (contains window coefficients of a Hamming window)
+    :param n: size of window
+    :return: Numpy array with window coefficients of a Hamming window
     """
     window_array = np.zeros(n, dtype=np.float64)
     for i in range(0, n):
@@ -16,10 +14,8 @@ def hamming_window(n):
 
 def hanning_window(n):
     """
-    INPUT:
-    n               (length of window)
-    OUTPUT:
-    window_array    (contains window coefficients of a Hanning window)
+    :param n: size of window
+    :return: Numpy array with window coefficients of a Hann window
     """
     window_array = np.zeros(n, dtype=np.float64)
     for i in range(0, n):
@@ -29,10 +25,8 @@ def hanning_window(n):
 
 def blackman_window(n):
     """
-    INPUT:
-    n               (length of window)
-    OUTPUT:
-    window_array    (contains window coefficients of a Blackman window)
+    :param n: size of window
+    :return: Numpy array with window coefficients of a Blackman window
     """
     window_array = np.zeros(n, dtype=np.float64)
     a0 = 0.42
