@@ -3,24 +3,43 @@ from scipy.fft import fft
 
 
 def scipy_fft(data):
-    y = fft(data)
-    return y
+    """
+    Uses the FFT algorithm from the SciPy library
+    :param data: wav data vector
+    :return: NumPy array of fft values
+    """
+    Fourier = fft(data)
+
+    # calculate absolute value
+    Fourier = abs(Fourier)
+    # cut half values
+    half_index = int(len(Fourier) / 2)
+    Fourier = Fourier[0:half_index]
+    return Fourier
 
 
 def radix2_fft(data):
+    """
+    Uses a recursive radix2 FFT algorithm
+    :param data: wav data vector
+    :return: NumPy array of fft values
+    """
     Fourier = fftrecur(data)
 
     # calculate absolute value
     Fourier = abs(Fourier)
-    # Fourier = abs(Fourier)
-    # and cut half values
-    half_index = int(len(Fourier)/2)
+    # cut half values
+    half_index = int(len(Fourier) / 2)
     Fourier = Fourier[0:half_index]
-
     return Fourier
 
 
 def fftrecur(data):
+    """
+    Recursive radix2 FFT algorithm
+    :param data: wav data vector
+    :return: NumPy array of fft values
+    """
     N = len(data)
     if N == 1:
         Xdft = data
@@ -32,7 +51,7 @@ def fftrecur(data):
         if N == 2:
             N_array = np.array([0])
         else:
-            N_array = np.arange(0, ((N / 2)))
+            N_array = np.arange(0, (N / 2))
         W = np.power(exponential, N_array)
 
         # in MATLAB
