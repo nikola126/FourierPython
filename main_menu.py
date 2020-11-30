@@ -5,10 +5,6 @@ from matplotlib.figure import Figure
 import numpy as np
 from gui_functions import *
 
-step_size = 0.1  # affects quality of plot
-max_coord = 10
-min_coord = -10
-
 
 def gui_function_caller(function, root):
     # Hides the main menu and returns it after user presses Quit
@@ -35,12 +31,12 @@ def restart(root):
 
 def gui_menu():
     root = Tk()
-    root.geometry("1600x700")
+    root.geometry("1600x600")
     root.title("WAV Spectrogram")
     root.resizable(False, False)
 
     # Add UI elements
-    info_label = Label(root, text="Info here", font=('Arial', 12))
+    label_info = Label(root, text="Info here", font=('Arial', 12))
     label_choice_filename = Label(root, text="File name", font=('Arial', 12), width=10, anchor='w')
     # TODO Dropdown menus
     label_choice_window_type = Label(root, text="Window type", font=('Arial', 12), width=10, anchor='w')
@@ -50,20 +46,21 @@ def gui_menu():
     input_window_type = StringVar(root)
     input_window_size = StringVar(root)
 
-    field_filename = Entry(root, textvariable=input_filename, font=('Courier', 15, 'bold'), width=8)
-    field_window_type = Entry(root, textvariable=input_window_type, font=('Courier', 15, 'bold'), width=8)
-    field_window_size = Entry(root, textvariable=input_window_size, font=('Courier', 15, 'bold'), width=8)
+    field_filename = Entry(root, textvariable=input_filename, font=('Courier', 15, 'bold'), width=14)
+    field_window_type = Entry(root, textvariable=input_window_type, font=('Courier', 15, 'bold'), width=14)
+    field_window_size = Entry(root, textvariable=input_window_size, font=('Courier', 15, 'bold'), width=14)
 
-    plot_signal_button = Button(root, text="Plot Signal", fg="green", width=18, height=1,
-                                command=lambda: gui_function_caller(gui_plot_signal, root))
+    plot_signal_button = Button(root, text="Read and plot", fg="green", width=18, height=1,
+                                command=lambda: gui_plot_signal(field_filename, label_info, fig_signal, canvas_signal))
     plot_spectrogram_button = Button(root, text="Plot Spectrogram", fg="green", width=18, height=1,
-                                     command=lambda: gui_function_caller(gui_plot_spectrogram, root))
+                                     command=lambda: gui_plot_spectrogram(field_window_type, field_window_size,
+                                                                          label_info, fig_spectrogram,
+                                                                          canvas_spectrogram))
     quit_button = Button(root, text="Quit", fg="red", width=15, height=1, command=lambda: stop_all(root))
 
     # Align UI elements
-    # row 18,19,20 column 0,1,2
-    info_label.grid(row=17, column=0, padx=10, pady=5, columnspan=10)
-    info_label.configure(anchor="center")
+    label_info.grid(row=17, column=0, padx=10, pady=5, columnspan=10)
+    label_info.configure(anchor="center")
     label_choice_filename.grid(row=18, column=0, pady=3)
     label_choice_window_size.grid(row=19, column=0, pady=3, columnspan=1)
     label_choice_window_type.grid(row=20, column=0, pady=3, columnspan=1)
@@ -97,8 +94,6 @@ def gui_menu():
     toolbar_frame_spectrogram = Frame(master=root)
     toolbar_frame_spectrogram.grid(row=15, column=7, columnspan=3, rowspan=2)
     toolbar = NavigationToolbar2Tk(canvas_spectrogram, toolbar_frame_spectrogram)
-
-    # Button Function Definitions
 
     root.mainloop()
     return 0
