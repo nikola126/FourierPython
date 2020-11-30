@@ -5,9 +5,10 @@ from spectrogram import *
 from radix2_fft import *
 
 from reading import read_wav
+from main_menu import gui_menu
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
+
+def console_main():
     print("Calculates and plots the spectrogram of a .wav file")
     # Get File Name
     file_name = input("Enter .wav file name (without extension):")
@@ -29,3 +30,12 @@ if __name__ == '__main__':
     user_window_choice = input("Enter type of window (Hamming,Hann,Blackman):")
     user_window_size = int(input("Enter window size (power of 2)(1024):"))
     spectrogram_data = spectrogram(data, fs, user_window_choice, user_window_size)
+
+
+def gui_main():
+    gui_menu()
+
+
+# Press the green button in the gutter to run the script.
+if __name__ == '__main__':
+    gui_main()
