@@ -5,7 +5,7 @@ from spectrogram import *
 from radix2_fft import *
 
 from reading import read_wav
-from main_menu import gui_menu
+from gui_main import gui_menu
 
 
 def console_main():
