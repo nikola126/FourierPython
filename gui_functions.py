@@ -34,11 +34,13 @@ def gui_open_file(field_filename, label_info, button_plot_signal,
     min_val = float(np.min(data))
     denom = max_val - min_val
 
-    # TODO optimize scaling with Numpy
-    normalized_data = np.zeros(len(wav_data), dtype=np.float64)
-    for i in range(0, len(data)):
-        normalized_data[i] = 2 * ((data[i] - min_val) / denom) - 1
-        # normalized_data[i] = data[i]
+    # for i in range(0, len(data)):
+    #     normalized_data[i] = 2 * ((data[i] - min_val) / denom) - 1
+    normalized_data = np.subtract(data,min_val)
+    normalized_data = np.divide(normalized_data,denom)
+    normalized_data = np.multiply(normalized_data,2)
+    normalized_data = np.subtract(normalized_data,1)
+
 
     # change UI if file is opened successfully
     button_plot_signal["state"] = "active"
