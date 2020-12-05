@@ -2,7 +2,7 @@ import numpy as np
 from scipy.fft import fft
 
 
-def scipy_fft(data):
+def fft_scipy(data):
     """
     Uses the FFT algorithm from the SciPy library
     :param data: wav data vector
@@ -18,13 +18,13 @@ def scipy_fft(data):
     return Fourier
 
 
-def radix2_fft(data):
+def fft_radix2(data):
     """
     Uses a recursive radix2 FFT algorithm
     :param data: wav data vector
     :return: NumPy array of fft values
     """
-    Fourier = fftrecur(data)
+    Fourier = fft_radix2_alg(data)
 
     # calculate absolute value
     Fourier = abs(Fourier)
@@ -34,7 +34,7 @@ def radix2_fft(data):
     return Fourier
 
 
-def fftrecur(data):
+def fft_radix2_alg(data):
     """
     Recursive radix2 FFT algorithm
     :param data: wav data vector
@@ -47,22 +47,20 @@ def fftrecur(data):
         # in MATLAB
         # W = exp(-2 * pi * j / N). ^ (0: (N / 2) - 1);
 
-        exponential = np.exp(-2 * np.pi * (0 + 1j) / N)
+        # exponential = np.exp(-2 * np.pi * (0 + 1j) / N)
+        exponential = np.exp(-2j * np.pi / N)
         if N == 2:
             N_array = np.array([0])
         else:
             N_array = np.arange(0, (N / 2))
         W = np.power(exponential, N_array)
 
+        # recursive calls
         # in MATLAB
         # XE = fftrecur(x(1: 2: (N - 1)));
-        to_XE = data[0:N:2]
+        XE = fft_radix2_alg(data[0:N:2])
         # XO = fftrecur(x(2:2: N));
-        to_XO = data[1:N:2]
-
-        # recursive calls
-        XE = fftrecur(to_XE)
-        XO = fftrecur(to_XO)
+        XO = fft_radix2_alg(data[1:N:2])
 
         temp = np.multiply(W, XO)
         Xdft = np.concatenate((XE + temp, XE - temp), axis=0)

@@ -53,15 +53,8 @@ def spectrogram(data, fs, window_type, window_length):
     print("Calculating FFT...")
     fft_data = np.zeros((slices, int(window_length / 2)))
     for row in range(0, slices):
-        fft_data[row, :] = radix2_fft(sliced_data[row, :])
+        fft_data[row, :] = fft_radix2(sliced_data[row, :])
         # fft_data[row, :] = scipy_fft(sliced_data[row, :])
-        # progress
-        if row == int(slices * (1 / 4)):
-            print("FFT 25% Complete")
-        elif row == int(slices * (1 / 2)):
-            print("FFT 50% Complete")
-        elif row == int(slices * (3 / 4)):
-            print("FFT 75% Complete")
     print("FFT Calculation complete.")
 
     fft_data = 20 * np.log10(fft_data)

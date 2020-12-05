@@ -7,6 +7,7 @@ from scipy.io import wavfile
 from radix2_fft import *
 from window import *
 from spectrogram import *
+import time
 
 
 def gui_open_file(field_filename, label_info, button_plot_signal,
@@ -36,11 +37,10 @@ def gui_open_file(field_filename, label_info, button_plot_signal,
 
     # for i in range(0, len(data)):
     #     normalized_data[i] = 2 * ((data[i] - min_val) / denom) - 1
-    normalized_data = np.subtract(data,min_val)
-    normalized_data = np.divide(normalized_data,denom)
-    normalized_data = np.multiply(normalized_data,2)
-    normalized_data = np.subtract(normalized_data,1)
-
+    normalized_data = np.subtract(data, min_val)
+    normalized_data = np.divide(normalized_data, denom)
+    normalized_data = np.multiply(normalized_data, 2)
+    normalized_data = np.subtract(normalized_data, 1)
 
     # change UI if file is opened successfully
     button_plot_signal["state"] = "active"
@@ -79,7 +79,8 @@ def gui_plot_signal(field_filename, label_info, fig_signal, canvas_signal):
     label_info.config(text="Plot Complete")
 
 
-def gui_plot_spectrogram(field_window_type, field_window_size, label_info, fig_spectrogram, canvas_spectrogram):
+def gui_plot_spectrogram(field_window_type, field_window_size, field_fft_implementation, label_info, fig_spectrogram,
+                         canvas_spectrogram):
     # get data from other functions
     data = gui_open_file.data
     fs = gui_open_file.fs
@@ -98,6 +99,18 @@ def gui_plot_spectrogram(field_window_type, field_window_size, label_info, fig_s
         label_info.config(text="Please provide window type. Default is Hamming window.")
         field_window_type.set(value="Hamming")
         return
+
+    # 1 - fast
+    # 2 - slow
+    fft_type = field_fft_implementation.get()
+    if fft_type == '':
+        label_info.config(text="Fastest FFT Algorithm chosen by default.")
+        field_fft_implementation.set(value="Fast (SciPy FFT)")
+        fft_type = 1
+    elif fft_type == "Fast (SciPy FFT)":
+        fft_type = 1
+    elif fft_type == "Slow (Homemade FFT)":
+        fft_type = 2
 
     # divide data in slices
     slice_length = window_length
@@ -134,22 +147,23 @@ def gui_plot_spectrogram(field_window_type, field_window_size, label_info, fig_s
 
     # calculate FFT of each row
     label_info.config(text="Calculating FFT...")
-    fft_data = np.zeros((slices, int(window_length / 2)))
-    for row in range(0, slices):
-        # fft_data[row, :] = radix2_fft(sliced_data[row, :])
-        fft_data[row, :] = scipy_fft(sliced_data[row, :])
-        # progress
-        if row == int(slices * (1 / 4)):
-            label_info.config(text="FFT 25% Complete")
-        elif row == int(slices * (1 / 2)):
-            label_info.config(text="FFT 50% Complete")
-        elif row == int(slices * (3 / 4)):
-            label_info.config(text="FFT 75% Complete")
-    label_info.config(text="FFT Calculation complete.")
+    time_start = time.time()
+    # choose FFT algorithm depending on user choice
+    if fft_type == 1:  # Fast (Scipy FFT)
+        fft_data = np.zeros((slices, int(window_length / 2)))
+        for row in range(0, slices):
+            fft_data[row, :] = fft_scipy(sliced_data[row, :])
+    elif fft_type == 2:  # Slow (Homemade FFT)
+        fft_data = np.zeros((slices, int(window_length / 2)))
+        for row in range(0, slices):
+            fft_data[row, :] = fft_radix2(sliced_data[row, :])
 
+    time_elapsed = round(time.time() - time_start, 2)
+    label_info.config(text="FFT Calculation complete. (" + str(time_elapsed) + "s)")
+
+    # rescale data
     fft_data = 20 * np.log10(fft_data)
     fft_data = np.transpose(fft_data)
-    label_info.config(text="All done.")
 
     # plot signal
     fig_spectrogram.clear()
